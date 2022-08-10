@@ -1,0 +1,14 @@
+
+Resize
+https://phaser.discourse.group/t/phaser3-fillscreen-and-position-stuff-on-top-bottom-etc/9960
+
+
+mongo
+username: skwerd_user
+password: gcTyZxplWi1redWV
+
+
+cookies
+https://www.section.io/engineering-education/what-are-cookies-nodejs/
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
+https://www.digitalocean.com/community/tutorials/api-authentication-with-json-web-tokensjwt-and-passport
