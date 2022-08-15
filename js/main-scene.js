@@ -70,19 +70,25 @@ export default class MainScene extends Phaser.Scene {
         if (Math.abs(dragX - gameObject.tileOriginX) > 20) {
           let { gridX, gridY } = gameObject.getGridPos();
 
+          // if (this.tiles[gridX + Math.sign(dragX - gameObject.tileOriginX)] instanceof LetterTile) {
           if (this.tiles[gridX + Math.sign(dragX - gameObject.tileOriginX)]) {
             this.allowDrag = false;
-            this.swapLetters(gridX, gridY, gridX + Math.sign(dragX - gameObject.tileOriginX), gridY);
-            gameObject.resetPosition();
+            // this.swapLetters(gridX, gridY, gridX + Math.sign(dragX - gameObject.tileOriginX), gridY);
+            this.swapTiles(gridX, gridY, gridX + Math.sign(dragX - gameObject.tileOriginX), gridY);
+            // gameObject.resetPosition();
             this.checkForWords();
           }
+          // else {
+          //   gameObject.resetPosition();
+          // }
         } else if ((Math.abs(dragY - gameObject.tileOriginY) > 20)) {
           let { gridX, gridY } = gameObject.getGridPos();
-
+          // if (this.tiles[gridX][gridY + Math.sign(dragY - gameObject.tileOriginY)] instanceof LetterTile) {
           if (this.tiles[gridX][gridY + Math.sign(dragY - gameObject.tileOriginY)]) {
             this.allowDrag = false;
-            this.swapLetters(gridX, gridY, gridX, gridY + Math.sign(dragY - gameObject.tileOriginY));
-            gameObject.resetPosition();
+            // this.swapLetters(gridX, gridY, gridX, gridY + Math.sign(dragY - gameObject.tileOriginY));
+            this.swapTiles(gridX, gridY, gridX, gridY + Math.sign(dragY - gameObject.tileOriginY));
+            // gameObject.resetPosition();
             this.checkForWords();
           }
         }
@@ -126,7 +132,7 @@ export default class MainScene extends Phaser.Scene {
     // }, this);
     this.input.on('dragend', function (pointer, gameObject) {
       this.allowDrag = true;
-      // gameObject.resetPosition();
+      gameObject.resetPosition();
     }, this);
 
     // let { width, height } = this.sys.game.canvas;
@@ -256,6 +262,23 @@ export default class MainScene extends Phaser.Scene {
     const swapLetter = this.tiles[x1][y1].getLetter();
     this.tiles[x1][y1].setLetter(this.tiles[x2][y2].getLetter());
     this.tiles[x2][y2].setLetter(swapLetter);
+  }
+
+  swapTiles(x1, y1, x2, y2) {
+    if (this.tiles[x2][y2] instanceof LetterTile) {
+      this.updateMoves();
+      const swapTile = this.tiles[x1][y1];
+      this.tiles[x1][y1] = this.tiles[x2][y2];  //setLetter(this.tiles[x2][y2].getLetter());
+      this.tiles[x2][y2] = swapTile;
+
+      this.tiles[x1][y1].setTilePosition(this.getWorldPos(x1, y1))
+      this.tiles[x2][y2].setTilePosition(this.getWorldPos(x2, y2))
+
+      this.tiles[x1][y1].resetPosition();
+      this.tiles[x2][y2].resetPosition();
+    } else {
+      this.tiles[x1][y1].resetPosition();
+    }
   }
 
   updateMoves() {
