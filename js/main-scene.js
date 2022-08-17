@@ -61,6 +61,7 @@ export default class MainScene extends Phaser.Scene {
     this.movesLeft = 20
     this.movesLeftText = this.add.bitmapText(width / 2, 0, 'main-font', this.movesLeft, 18).setOrigin(0.5, 0);
 
+    this.extraTiles = 40;
     this.allowDrag = true;
 
     this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
@@ -188,12 +189,19 @@ export default class MainScene extends Phaser.Scene {
     // let startX = (width - gridWidth * cellWidth + cellWidth) / 2;
     // let startY = 120;
 
+    // const letters = [
+    //   ['e', 'h', 'f', 'd', 'i', 'd', 'r', 'c'],
+    //   ['r', 'a', 'n', 'r', 'l', 'b', 'l', 'a'],
+    //   ['a', 'k', 'o', 'l', 's', 'w', 'a', 'o'],
+    //   ['g', 'p', 'a', 'd', 'o', 's', 'n', 't'],
+    //   ['r', 'n', 'f', 's', 'u', 'e', 'e', 's']
+    // ];
     const letters = [
-      ['e', 'h', 'f', 'd', 'i', 'd', 'r', 'c'],
-      ['r', 'a', 'n', 'r', 'l', 'b', 'l', 'a'],
-      ['a', 'k', 'o', 'l', 's', 'w', 'a', 'o'],
-      ['g', 'p', 'a', 'd', 'o', 's', 'n', 't'],
-      ['r', 'n', 'f', 's', 'u', 'e', 'e', 's']
+      ['b', 'o', 'p', 'o', 'a', 'l', 'c', 'e'],
+      ['l', 'y', 'g', 'm', 'y', 'f', 'o', 'i'],
+      ['a', 'm', 's', 'o', 'r', 'a', 'l', 'l'],
+      ['e', 'a', 'e', 'p', 'e', 'm', 's', 's'],
+      ['k', 'f', 'l', 'c', 'a', 'k', 'e', 'e']
     ];
     this.tiles = [...Array(this.gridWidth)].map(e => Array(this.gridHeight));
     this.letterGrid = [...Array(this.gridWidth)].map(e => Array(this.gridHeight));
@@ -429,7 +437,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   getLongestWord(letters, minLength = 3) {
-    console.log('letters', letters)
+    // console.log('letters', letters)
     let startIndex;
     let word = '';
     for (let i = 0; i < letters.length - minLength + 1; i++) {
@@ -463,7 +471,17 @@ export default class MainScene extends Phaser.Scene {
         newTiles[pos[0]][i].setTilePosition(this.getWorldPos(pos[0], i));
         // newTiles[pos[0]][i - 1] = new EmptyTile();
       }
-      newTiles[pos[0]][0] = new EmptyTile();
+      if (this.extraTiles > 0) {
+        let random = Phaser.Math.FloatBetween(0, 1);
+        let letterIndex = this.cumulativeProbability.findIndex(function (number) {
+          return number > random;
+        });
+        newTiles[pos[0]][0] = new LetterTile(this, this.startX + pos[0] * this.cellWidth, this.startY - 180, this.tileWidth, ALPHABET[letterIndex], 0);
+        newTiles[pos[0]][0].setTilePosition(this.getWorldPos(pos[0], 0));
+        this.extraTiles -= 1;
+      } else {
+        newTiles[pos[0]][0] = new EmptyTile();
+      }
     }
 
     this.tiles = newTiles;
@@ -473,7 +491,12 @@ export default class MainScene extends Phaser.Scene {
     this.time.addEvent({
       delay: 3000,
       loop: false,
-      callback: this.updateTilePositions, //this.spawnShape,
+      callback: function () {
+        this.updateTilePositions() //this.spawnShape,
+        if (wordTiles) {
+          this.checkForWords();
+        }
+      },
       callbackScope: this
     }, this);
 
@@ -570,6 +593,8 @@ export default class MainScene extends Phaser.Scene {
         // }
       }
     }
+
+    // this.checkForWords();
 
   }
 
