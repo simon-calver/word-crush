@@ -11834,7 +11834,6 @@ estuary
 esurient
 etalon
 etas
-etc
 etcetera
 etch
 etched
@@ -12490,6 +12489,7 @@ farcical
 farcing
 fare
 fared
+farer
 fares
 farewell
 farina
